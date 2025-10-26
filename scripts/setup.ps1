@@ -7,19 +7,20 @@ if (-not (kubectl get ns chaos-mesh -o name 2>$null)) {
     Start-Sleep -Seconds 10
 }
 
-# Create namespace for chaos experiments
+# Create namespace
 kubectl create namespace chaos-testing --dry-run=client -o yaml | kubectl apply -f -
 
-# Deploy busybox pod via Deployment
+# Deploy busybox
 kubectl apply -f manifests/busybox-deployment.yaml
+kubectl rollout status deployment/busybox -n chaos-testing
 
-# Wait for pod to be ready
-Write-Host "Waiting for busybox pod to be ready..."
-kubectl wait --for=condition=available --timeout=60s deployment/busybox -n chaos-testing
+# Apply recurring chaos experiment
+kubectl apply -f chaosmesh/experiments/busybox-schedule.yaml
 
-# Apply Chaos Mesh PodChaos experiment
-kubectl apply -f chaosmesh/experiments/busybox-podchaos.yaml
+# Confirm schedule is active
+Write-Host "`n✅ Chaos schedule deployed:"
+kubectl get schedule -n chaos-testing
 
-# Confirm experiment was created
-Write-Host "`n✅ Chaos experiment deployed:"
-kubectl get podchaos -n chaos-testing
+# Run Robot test
+Write-Host "`n🤖 Running recovery test..."
+robot robot-tests/test-cases/test_busybox_recovery.robot
