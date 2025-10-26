@@ -18,11 +18,12 @@ A toolkit to validate Kubernetes network service resilience using Chaos Engineer
 
 
 ## 🔥 Install Chaos Mesh via Helm
-🔧 Step 1: Add the Chaos Mesh Helm repo
+1. Add the Chaos Mesh Helm repo
+
 helm repo add chaos-mesh https://charts.chaos-mesh.org
 helm repo update
 
-📦 Step 2: Install Chaos Mesh
+2. Install Chaos Mesh
 helm install chaos-mesh chaos-mesh/chaos-mesh \
   --namespace=chaos-mesh --create-namespace \
   --set chaosDaemon.runtime=containerd \
@@ -30,7 +31,7 @@ helm install chaos-mesh chaos-mesh/chaos-mesh \
 
 If you're using Docker runtime, remove the --set flags.
 
-🧪 Step 3: Verify Installation
+3. Verify Installation
 kubectl get pods -n chaos-mesh
 kubectl get crds | grep chaos-mesh
 
