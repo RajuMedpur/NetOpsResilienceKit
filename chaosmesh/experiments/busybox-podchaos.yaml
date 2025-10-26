@@ -12,5 +12,4 @@ spec:
     labelSelectors:
       app: busybox
   duration: "30s"
-  scheduler:
-    cron: "@every 2m"
+ 
