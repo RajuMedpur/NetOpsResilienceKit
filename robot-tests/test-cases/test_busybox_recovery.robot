@@ -11,6 +11,10 @@ ${LABEL}          app=busybox
 ${DEPLOYMENT}     busybox
 
 *** Test Cases ***
+Verify Kubectl Is Available
+    ${check}=    Run Process    ${KUBECTL} version --client
+    Should Contain    ${check.stdout}    Client Version
+
 Sanity Check: Busybox Pod Is Running
     [Tags]    sanity
     ${result}=    Run Process    ${KUBECTL} get pods -n ${NAMESPACE}
@@ -30,11 +34,6 @@ Schedule Check: Chaos Schedule Is Active
     [Tags]    schedule
     ${status}=    Run Process    ${KUBECTL} get schedule busybox-pod-kill-schedule -n ${NAMESPACE} -o jsonpath="{.status}"
     Should Contain    ${status.stdout}    nextStart
-
-*** Keywords ***
-Verify Kubectl Is Available
-    ${check}=    Run Process    ${KUBECTL} version --client
-    Should Contain    ${check.stdout}    Client Version
 
 Log Test Completion
     Log    ✅ Chaos recovery test suite completed.
