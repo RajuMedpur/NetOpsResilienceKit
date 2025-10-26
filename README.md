@@ -15,3 +15,13 @@ A toolkit to validate Kubernetes network service resilience using Chaos Engineer
 - `robot-tests/`: Robot Framework test cases
 - `scripts/`: Utility scripts
 - `docs/`: Architecture and usage guides 
+
+
+## 🔥 Chaos Setup with Litmus
+
+To run chaos experiments:
+
+```bash
+kubectl apply -f litmus-chaos/crds/litmuschaos-crds.yaml
+kubectl apply -f litmus-chaos/rbac/litmus-service-account.yaml
+kubectl apply -f litmus-chaos/engines/dns-pod-delete-chaosengine.yaml
