@@ -35,5 +35,10 @@ Schedule Check: Chaos Schedule Is Active
     ${status}=    Run Process    ${KUBECTL} get schedule busybox-pod-kill-schedule -n ${NAMESPACE} -o jsonpath="{.status}"
     Should Contain    ${status.stdout}    nextStart
 
+*** Keywords ***
+Verify Kubectl Is Available
+    ${check}=    Run Process    ${KUBECTL} version --client
+    Should Contain    ${check.stdout}    Client Version
+
 Log Test Completion
     Log    ✅ Chaos recovery test suite completed.
