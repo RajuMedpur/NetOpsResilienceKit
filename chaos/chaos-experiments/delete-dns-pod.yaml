@@ -1,19 +1,20 @@
 apiVersion: litmuschaos.io/v1alpha1
 kind: ChaosEngine
 metadata:
-  name: dns-chaos
+  name: dns-pod-delete
+  namespace: litmus
 spec:
   appinfo:
     appns: default
-    applabel: "app=dns"
-    appkind: pod
+    applabel: "app=dns-pod"
+    appkind: deployment
   chaosServiceAccount: litmus-admin
   experiments:
     - name: pod-delete
       spec:
         components:
           env:
-            - name: TARGET_PODS
-              value: "dns-pod-1"
-            - name: CHAOS_DURATION
-              value: "30"
+            - name: TOTAL_CHAOS_DURATION
+              value: "10"
+            - name: FORCE
+              value: "true"
