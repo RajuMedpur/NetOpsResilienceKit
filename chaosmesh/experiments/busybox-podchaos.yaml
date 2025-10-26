@@ -1,3 +1,4 @@
+# busybox-podchaos.yaml
 apiVersion: chaos-mesh.org/v1alpha1
 kind: PodChaos
 metadata:
@@ -8,8 +9,9 @@ spec:
   mode: one
   selector:
     namespaces:
-      - chaos-testing
+      - default
     labelSelectors:
       app: busybox
-  duration: "30s"
- 
+  duration: "10s"
+  scheduler:
+    cron: "@once"
