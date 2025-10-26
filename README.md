@@ -17,7 +17,7 @@ A toolkit to validate Kubernetes network service resilience using Chaos Engineer
 - `docs/`: Architecture and usage guides 
 
 
-## 🔥 Install Chaos Mesh via Helm
+## Install Chaos Mesh via Helm
 1. Add the Chaos Mesh Helm repo
 
 helm repo add chaos-mesh https://charts.chaos-mesh.org
