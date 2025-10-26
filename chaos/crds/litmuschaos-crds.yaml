@@ -1,0 +1,1 @@
+kubectl apply -f https://litmuschaos.github.io/litmus/litmus-operator-v1.13.0.yaml
