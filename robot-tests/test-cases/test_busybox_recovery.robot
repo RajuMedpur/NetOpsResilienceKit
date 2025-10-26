@@ -5,7 +5,7 @@ Suite Setup       Verify Kubectl Is Available
 Suite Teardown    Log Test Completion
 
 *** Variables ***
-${KUBECTL}        C:/Program Files/Kubernetes/kubectl.exe
+${KUBECTL}        C:\Program Files\Docker\Docker\resources\bin\kubectl.exe
 ${NAMESPACE}      chaos-testing
 ${LABEL}          app=busybox
 ${DEPLOYMENT}     busybox
