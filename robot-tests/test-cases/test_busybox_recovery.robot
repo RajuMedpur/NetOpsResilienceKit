@@ -1,36 +1,40 @@
 *** Settings ***
 Library           Process
 Library           OperatingSystem
-Suite Setup       Setup Environment
-Suite Teardown    Teardown Environment
+Suite Setup       Verify Kubectl Is Available
+Suite Teardown    Log Test Completion
 
 *** Variables ***
+${KUBECTL}        C:/Program Files/Kubernetes/kubectl.exe
 ${NAMESPACE}      chaos-testing
-${DEPLOYMENT}     busybox
 ${LABEL}          app=busybox
+${DEPLOYMENT}     busybox
 
 *** Test Cases ***
-Verify Busybox Pod Is Running
+Sanity Check: Busybox Pod Is Running
     [Tags]    sanity
-    ${result}=    Run Process    kubectl get pods -n ${NAMESPACE}
+    ${result}=    Run Process    ${KUBECTL} get pods -n ${NAMESPACE}
     Should Contain    ${result.stdout}    ${DEPLOYMENT}
     Should Contain    ${result.stdout}    Running
 
-Verify Pod Restart Count Increases After Chaos
+Chaos Validation: Pod Restart Count Increases
     [Tags]    chaos
-    ${before}=    Run Process    kubectl get pod -l ${LABEL} -n ${NAMESPACE} -o jsonpath="{.items[0].status.containerStatuses[0].restartCount}"
+    ${before}=    Run Process    ${KUBECTL} get pod -l ${LABEL} -n ${NAMESPACE} -o jsonpath="{.items[0].status.containerStatuses[0].restartCount}"
     Sleep    150s
-    ${after}=     Run Process    kubectl get pod -l ${LABEL} -n ${NAMESPACE} -o jsonpath="{.items[0].status.containerStatuses[0].restartCount}"
+    ${after}=     Run Process    ${KUBECTL} get pod -l ${LABEL} -n ${NAMESPACE} -o jsonpath="{.items[0].status.containerStatuses[0].restartCount}"
+    Log    Restart count before chaos: ${before.stdout}
+    Log    Restart count after chaos: ${after.stdout}
     Should Be True    ${after.stdout} > ${before.stdout}
 
-Verify Chaos Schedule Is Active
-    [Tags]    chaos
-    ${status}=    Run Process    kubectl get schedule busybox-pod-kill-schedule -n ${NAMESPACE} -o jsonpath="{.status}"
+Schedule Check: Chaos Schedule Is Active
+    [Tags]    schedule
+    ${status}=    Run Process    ${KUBECTL} get schedule busybox-pod-kill-schedule -n ${NAMESPACE} -o jsonpath="{.status}"
     Should Contain    ${status.stdout}    nextStart
 
 *** Keywords ***
-Setup Environment
-    Run Process    kubectl config current-context
+Verify Kubectl Is Available
+    ${check}=    Run Process    ${KUBECTL} version --client
+    Should Contain    ${check.stdout}    Client Version
 
-Teardown Environment
-    Log    Test suite completed.
+Log Test Completion
+    Log    ✅ Chaos recovery test suite completed.
