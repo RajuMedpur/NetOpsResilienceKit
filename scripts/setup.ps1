@@ -1,32 +1,25 @@
-Write-Host "🚀 Starting NetOpsResilienceKit setup..."
-
-# Step 1: Check for Helm
-if (-not (Get-Command helm -ErrorAction SilentlyContinue)) {
-    Write-Host "❌ Helm not found. Please install Helm from https://helm.sh/docs/intro/install/"
-    exit 1
+# Check if Chaos Mesh is installed
+if (-not (kubectl get ns chaos-mesh -o name 2>$null)) {
+    Write-Host "Chaos Mesh not found. Installing via Helm..."
+    helm repo add chaos-mesh https://charts.chaos-mesh.org
+    helm repo update
+    helm install chaos-mesh chaos-mesh/chaos-mesh --namespace=chaos-mesh --create-namespace
+    Start-Sleep -Seconds 10
 }
 
-# Step 2: Install LitmusChaos via Helm
-Write-Host "📦 Installing LitmusChaos via Helm..."
-helm repo add litmuschaos https://litmuschaos.github.io/litmus-helm/
-helm repo update
-helm install litmus litmuschaos/litmus --namespace=litmus --create-namespace
+# Create namespace for chaos experiments
+kubectl create namespace chaos-testing --dry-run=client -o yaml | kubectl apply -f -
 
-# Step 3: Wait for operator to initialize
-Write-Host "⏳ Waiting for chaos-operator to be ready..."
-Start-Sleep -Seconds 20
-
-# Step 4: Deploy BusyBox target pod
-Write-Host "📦 Deploying BusyBox pod via Deployment..."
+# Deploy busybox pod via Deployment
 kubectl apply -f manifests/busybox-deployment.yaml
 
-# Step 5: Apply LitmusChaos RBAC
-Write-Host "🔐 Applying LitmusChaos service account and RBAC..."
-kubectl apply -f chaos/rbac/litmus-service-account.yaml
+# Wait for pod to be ready
+Write-Host "Waiting for busybox pod to be ready..."
+kubectl wait --for=condition=available --timeout=60s deployment/busybox -n chaos-testing
 
-# Step 6: Apply ChaosEngine to trigger pod-delete experiment
-Write-Host "🔥 Applying ChaosEngine for BusyBox pod-delete..."
-kubectl apply -f chaos/engines/busybox-chaosengine.yaml
+# Apply Chaos Mesh PodChaos experiment
+kubectl apply -f chaosmesh/experiments/busybox-podchaos.yaml
 
-Write-Host "✅ Setup complete! Run Robot test with:"
-Write-Host "robot robot-tests/test-cases/test_busybox_recovery.robot"
+# Confirm experiment was created
+Write-Host "`n✅ Chaos experiment deployed:"
+kubectl get podchaos -n chaos-testing
