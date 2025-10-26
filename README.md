@@ -17,11 +17,29 @@ A toolkit to validate Kubernetes network service resilience using Chaos Engineer
 - `docs/`: Architecture and usage guides 
 
 
-## 🔥 Chaos Setup with Litmus
+## 🔥 Install Chaos Mesh via Helm
+🔧 Step 1: Add the Chaos Mesh Helm repo
+helm repo add chaos-mesh https://charts.chaos-mesh.org
+helm repo update
 
-To run chaos experiments:
+📦 Step 2: Install Chaos Mesh
+helm install chaos-mesh chaos-mesh/chaos-mesh \
+  --namespace=chaos-mesh --create-namespace \
+  --set chaosDaemon.runtime=containerd \
+  --set chaosDaemon.socketPath=/run/containerd/containerd.sock
 
-```bash
-kubectl apply -f litmus-chaos/crds/litmuschaos-crds.yaml
-kubectl apply -f litmus-chaos/rbac/litmus-service-account.yaml
-kubectl apply -f litmus-chaos/engines/dns-pod-delete-chaosengine.yaml
+If you're using Docker runtime, remove the --set flags.
+
+🧪 Step 3: Verify Installation
+kubectl get pods -n chaos-mesh
+kubectl get crds | grep chaos-mesh
+
+
+Expected CRDs:
+podchaos.chaos-mesh.org
+networkchaos.chaos-mesh.org
+stresschaos.chaos-mesh.org
+...
+
+
+
