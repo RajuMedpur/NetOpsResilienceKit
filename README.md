@@ -41,5 +41,8 @@ networkchaos.chaos-mesh.org
 stresschaos.chaos-mesh.org
 ...
 
+running pods like 
+chaos-controller-manager
+chaos-daemon
 
 
