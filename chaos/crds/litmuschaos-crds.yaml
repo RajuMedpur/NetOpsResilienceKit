@@ -1,3 +1,0 @@
-curl -o chaos/crds/litmuschaos-crds.yaml https://litmuschaos.github.io/litmus/litmus-operator-v1.13.0.yaml
-kubectl apply -f chaos/crds/litmuschaos-crds.yaml
-
