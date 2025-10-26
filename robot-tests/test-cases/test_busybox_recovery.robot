@@ -12,7 +12,7 @@ ${DEPLOYMENT}     busybox
 
 *** Test Cases ***
 Verify Kubectl Is Available
-    ${check}=    Run Process    ${KUBECTL} version --client
+    ${result}=    Run Process    ${KUBECTL} version --client    shell=True
     Should Contain    ${check.stdout}    Client Version
 
 Sanity Check: Busybox Pod Is Running
