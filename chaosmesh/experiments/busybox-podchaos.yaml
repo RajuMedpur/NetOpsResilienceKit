@@ -9,7 +9,7 @@ spec:
   mode: one
   selector:
     namespaces:
-      - default
+      - chaos-testing
     labelSelectors:
       app: busybox
   duration: "10s"
