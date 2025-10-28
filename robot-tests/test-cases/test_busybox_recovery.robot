@@ -16,7 +16,8 @@ Chaos Mesh Pod Kill Validation
     Log    >>> BEFORE UID: ${before_uid}
 
     # Step 2: Inject chaos
-    ${apply_cmd}=    Set Variable    ${KUBECTL} apply -f "${CHAOS_FILE}" -n ${NAMESPACE}
+    # ${apply_cmd}=    Set Variable    ${KUBECTL} apply -f "${CHAOS_FILE}" -n ${NAMESPACE}
+    ${apply_cmd}=    Set Variable    ${KUBECTL} replace --force -f "${CHAOS_FILE}" -n ${NAMESPACE}
     ${chaos}=    Run Process    ${apply_cmd}    shell=True    stdout=True    stderr=True
     Log    >>> Chaos apply stdout: ${chaos.stdout}
     Log    >>> Chaos apply stderr: ${chaos.stderr}
