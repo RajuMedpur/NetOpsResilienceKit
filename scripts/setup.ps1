@@ -12,7 +12,7 @@ kubectl create namespace chaos-testing --dry-run=client -o yaml | kubectl apply 
 
 # Deploy busybox
 kubectl apply -f manifests/busybox-deployment.yaml
-kubectl rollout status deployment/busybox -n chaos-testing
+kubectl rollout status deployment/busybox -n -A
 
 # Apply recurring chaos experiment
 kubectl apply -f chaosmesh/experiments/busybox-schedule.yaml
