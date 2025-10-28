@@ -15,7 +15,7 @@ kubectl apply -f manifests/busybox-deployment.yaml
 kubectl rollout status deployment/busybox -n -A
 
 # Apply recurring chaos experiment
-kubectl apply -f chaosmesh/experiments/busybox-schedule.yaml
+kubectl apply -f chaosmesh/experiments/busybox-podchaos.yaml
 
 # Confirm schedule is active
 Write-Host "`n✅ Chaos schedule deployed:"
